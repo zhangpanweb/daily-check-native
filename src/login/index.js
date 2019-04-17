@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Button, TextInput } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import fetchRequest from '../../utils/fetch-request';
 
@@ -8,6 +8,13 @@ const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    navigation.setParams({
+      loginOrRegist,
+      handleSwitchLoginAndRegist
+    })
+  }, [loginOrRegist])
 
   const hanldeUsernameInput = (text) => {
     setUsername(text);
@@ -27,7 +34,7 @@ const Login = ({ navigation }) => {
 
     let res = {};
     if (loginOrRegist === 'login') {
-      res = await fetchRequest('http://localhost:3100/api/user/login', {
+      res = await fetchRequest('/api/user/login', {
         method: 'POST',
         body: JSON.stringify({
           name: username,
@@ -35,9 +42,12 @@ const Login = ({ navigation }) => {
         })
       })
     } else {
-      result = await axios.post('/api/user/register', {
-        name: username,
-        password
+      res = await fetchRequest('/api/user/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: username,
+          password
+        })
       });
     }
 
@@ -53,6 +63,7 @@ const Login = ({ navigation }) => {
   };
 
   const handleSwitchLoginAndRegist = () => {
+    setErrorMessage('');
     if (loginOrRegist === 'login') {
       setLoginOrRegist('regist');
     } else {
@@ -61,36 +72,77 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View className="login-container">
-      <View className="content-wrapper">
-        <TextInput
-          className="username"
-          placeholder="请输入账号"
-          onChangeText={(text) => hanldeUsernameInput(text)}
-        />
-        <TextInput
-          placeholder="请输入密码"
-          onChangeText={(text) => handlePasswordInput(text)}
-        />
-        <Text className="tip">{errorMessage}</Text>
-        <Button
-          title={`${loginOrRegist === 'regist' ? '注册' : '登录'}`}
-          onPress={handleLoginOrRegist}
-        />
-      </View>
-    </View>
+    <View className="login-container" style={styles.container}>
+      <TextInput
+        style={styles.input}
+        className="username"
+        placeholder="请输入账号"
+        onChangeText={(text) => hanldeUsernameInput(text)}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="请输入密码"
+        onChangeText={(text) => handlePasswordInput(text)}
+      />
+      <Text className="tip" style={styles.errorText}>{errorMessage}</Text>
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={handleLoginOrRegist}
+      >
+        <Text style={styles.buttonText}>{loginOrRegist === 'regist' ? '注册' : '登录'}</Text>
+        {/* <Text style={{}}></Text> */}
+      </TouchableOpacity>
 
+    </View>
   );
 };
 
-Login.navigationOptions = {
-  title: '登录',
-  headerRight: (
-    <Button
-      title='注册'
-      onPress={() => { }}
-    />
-  )
+Login.navigationOptions = ({ navigation }) => {
+  const isLogin = navigation.getParam('loginOrRegist') === 'login';
+  const pageTitle = isLogin ? '登录' : '注册';
+  const buttonTitle = isLogin ? '注册' : '登录';
+
+  const handleSwitchLoginAndRegist = navigation.getParam('handleSwitchLoginAndRegist');
+
+  return {
+    title: pageTitle,
+    headerRight: (
+      <Button
+        title={buttonTitle}
+        type='outline'
+        onPress={() => handleSwitchLoginAndRegist()}
+      />
+    )
+  }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginTop: 30
+  },
+  input: {
+    width: 200,
+    height: 35,
+    marginTop: 20,
+  },
+  errorText: {
+    height: 30,
+    marginTop: 20
+  },
+  loginButton: {
+    width: 200,
+    height: 50,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 3
+  },
+  buttonText: {
+    lineHeight: 50,
+    textAlign: 'center'
+  }
+})
 
 export default Login;

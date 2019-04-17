@@ -12,8 +12,7 @@ const AuthLoading = ({ navigation }) => {
   }, []);
 
   const _checkToken = async () => {
-    const res = await fetchRequest('http://localhost:3100/api/user');
-    alert(JSON.stringify(res))
+    const res = await fetchRequest('/api/user');
     if (res.status !== 200 || res.ok !== true) {
       navigation.navigate('login');
     } else {

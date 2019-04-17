@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
+const baseUrl = 'http://192.168.20.56:3100'
+
 async function fetchRequest(url, params) {
   const cookie = await AsyncStorage.getItem('cookie');
 
@@ -15,7 +17,7 @@ async function fetchRequest(url, params) {
   const fetchParms = params || {};
   fetchParms.headers = headers;
 
-  return fetch(url, fetchParms);
+  return fetch(`${baseUrl + url}`, fetchParms);
 
 }
 
