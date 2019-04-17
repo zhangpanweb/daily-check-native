@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   createSwitchNavigator,
   createStackNavigator,
@@ -11,6 +12,8 @@ import Login from '../login';
 import Setting from '../setting';
 import AuthLoading from '../auth-loading';
 import Debug from '../debug';
+
+import TabBarIcon from './tab-bar-icon';
 
 const RecordStack = createStackNavigator({
   record: {
@@ -38,7 +41,17 @@ const HomeStack = createStackNavigator({
 const MainStack = createBottomTabNavigator({
   home: HomeStack,
   record: RecordStack
-})
+}, {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused }) => {
+        const { routeName } = navigation.state;
+        return <TabBarIcon routeName={routeName} focused={focused} />
+      },
+    }),
+    tabBarOptions: {
+      showLabel: false
+    }
+  })
 
 const LoginStack = createStackNavigator({
   login: {
@@ -57,7 +70,6 @@ const rootStack = createSwitchNavigator({
   debug: debugStack
 }, {
     mode: 'modal',
-    // headerMode: 'none',
     initialRouteName: 'authLoading'
   });
 
