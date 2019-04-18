@@ -26,14 +26,15 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    height: 50,
-    lineHeight: 50,
+    height: 45,
+    lineHeight: 45,
   },
   item: {
     fontSize: 18,
-    height: 50,
-    lineHeight: 50,
-    fontSize: 15
+    height: 45,
+    lineHeight: 45,
+    fontSize: 15,
+    paddingLeft: 10
   },
 })
 
