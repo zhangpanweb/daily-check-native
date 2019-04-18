@@ -27,6 +27,10 @@ const Debug = ({ navigation }) => {
         title="Clear cookies"
         onPress={clearCookie}
       />
+      <Button
+        title="Go Home"
+        onPress={() =>navigation.navigate('home')}
+      />
     </View>
   )
 };
