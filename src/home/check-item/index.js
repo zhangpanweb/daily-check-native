@@ -1,31 +1,37 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-import './style.less';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const CheckItem = ({ checkItem }) => {
-  // const completedImg = <i className="iconfont icon-check-circle"></i>;
-  // const notCompletedImg = <i className="iconfont icon-close-circle"></i>;
+  if (!checkItem) return;
+
+  const completedImg = <Text style={[styles.img, styles.blue]}>&#xe77d;</Text>
+  const notCompletedImg = <Text style={styles.img}>&#xe77e;</Text>
 
   return (
-    <div className="check-item-container">
-
-      {/* { checkItem.isCompleted ? completedImg : notCompletedImg } */}
-
-      <p className="name">
+    <View style={styles.container}>
+      {checkItem.isCompleted ? completedImg : notCompletedImg}
+      <Text style={checkItem.isCompleted ? styles.blue : null}>
         {checkItem.name}
-      </p>
-
-    </div>
+      </Text>
+    </View>
   );
 };
 
-CheckItem.propTypes = {
-  checkItem: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    isCompleted: PropTypes.bool.isRequired
-  })
-};
+const styles = StyleSheet.create({
+  container: {
+    width: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30
+  },
+  img: {
+    fontFamily: "iconfont",
+    fontSize: 55,
+    marginBottom: 10
+  },
+  blue: {
+    color: '#007AFF'
+  }
+})
 
 export default CheckItem;
