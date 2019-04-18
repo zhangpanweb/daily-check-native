@@ -42,8 +42,8 @@ const Calendar = ({ value = new Date(), onChangeDate }) => {
     if (date) {
       setSelectedDate(date);
 
-      // const fomatedDate = `${moment(selectedMonth).format('YYYY-MM').toString()}-${date}`;
-      // onChangeDate(moment(fomatedDate).format('YYYY-MM-DD').toString());
+      const fomatedDate = `${moment(selectedMonth).format('YYYY-MM').toString()}-${date}`;
+      onChangeDate(moment(fomatedDate).format('YYYY-MM-DD').toString());
     }
   };
 
@@ -72,6 +72,7 @@ const Calendar = ({ value = new Date(), onChangeDate }) => {
     setMonthDates(dates);
   };
 
+  let keyId = 0;
   return (
     <View style={styles.container}>
       <View style={[styles.title, styles.rowHeight]}>
@@ -86,14 +87,14 @@ const Calendar = ({ value = new Date(), onChangeDate }) => {
 
       <View style={styles.dateWrapper}>
         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(date => {
-          return <Text style={[styles.date, styles.rowHeight, styles.day]}>{date}</Text>
+          return <Text key={keyId++} style={[styles.date, styles.rowHeight, styles.day]}>{date}</Text>
         })}
       </View>
 
       <View style={styles.dateWrapper}>
-        {monthDates.map(date => {
+        {monthDates.map((date, index) => {
           return (
-            <TouchableOpacity onPress={() => handleSelectedDate(date)}>
+            <TouchableOpacity onPress={() => handleSelectedDate(date)} key={keyId++}>
               <Text style={[styles.date, styles.rowHeight, selectedDate === date ? styles.selected : null]}>{date}</Text>
             </TouchableOpacity>
           )
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     marginTop: 20,
     backgroundColor: 'rgba(250,250,250,1)',
-    height: 200
+    height: 315
   },
   title: {
     flexDirection: 'row',
