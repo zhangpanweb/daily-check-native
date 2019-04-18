@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 
+import Calendar from './calendar';
+
 const Record = ({ navigation }) => {
   return (
     <View>
-      <Text>Record Page</Text>
+      <Calendar />
     </View>
   )
 }
