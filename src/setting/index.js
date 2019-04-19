@@ -1,9 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { View, Text, Button, FlatList, StyleSheet, TouchableOpacity, AlertIOS, TextInput } from 'react-native';
 import fetchRequest from '../../utils/fetch-request';
 
 const Setting = ({ navigation }) => {
-  const [checkItems, setCheckItems] = useState([]);
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'edit':
+        const newState = state.concat([]);
+        newState[action.index] = action.checkItem;
+        return newState;
+      case 'add':
+        return state.concat(action.checkItem);
+      default:
+        return state;
+    }
+  }
+
+  const [checkItems, dispatchCheckItems] = useReducer(reducer, []);
 
   useEffect(() => {
     _getCheckItems();
@@ -18,10 +31,8 @@ const Setting = ({ navigation }) => {
       '',
       async (text) => {
         await _saveCheckItem(item.id, text);
-
-        const newCheckItems = checkItems.concat([]);
-        newCheckItems[index].name = text;
-        setCheckItems(newCheckItems);
+        const newCheckItem = Object.assign(item, { name: text })
+        dispatchCheckItems({ type: 'edit', index: index, checkItem: newCheckItem })
       },
       'plain-text',
       item.name
@@ -29,8 +40,7 @@ const Setting = ({ navigation }) => {
   };
 
   const handleAddItem = (newItem) => {
-    const newCheckItems = checkItems.concat([newItem]); // fixme checkItems is []
-    setCheckItems(newCheckItems);
+    dispatchCheckItems({ type: 'add', checkItem: newItem })
   }
 
   const _saveCheckItem = async (id, name) => {
@@ -45,7 +55,7 @@ const Setting = ({ navigation }) => {
   const _getCheckItems = async () => {
     const res = await fetchRequest('/api/check_item');
     const result = await res.json();
-    setCheckItems(result);
+    dispatchCheckItems({ type: 'add', checkItem: result });
   };
 
   return (
@@ -66,29 +76,31 @@ const Setting = ({ navigation }) => {
 Setting.navigationOptions = ({ navigation }) => {
   const handleAddItem = navigation.getParam('handleAddItem');
 
+  const prompToAddItem = () => {
+    AlertIOS.prompt(
+      '添加打卡项',
+      '',
+      async (text) => {
+        const res = await fetchRequest('/api/check_item', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: text
+          })
+        })
+        const result = await res.json();
+        handleAddItem(result);
+      },
+      'plain-text',
+      ''
+    )
+  }
+
   return {
     title: "设置",
     headerRight: (
       <Button
         title="+"
-        onPress={() => {
-          AlertIOS.prompt(
-            '添加打卡项',
-            '',
-            async (text) => {
-              const res = await fetchRequest('/api/check_item', {
-                method: 'POST',
-                body: JSON.stringify({
-                  name: text
-                })
-              })
-              const result = await res.json();
-              handleAddItem(result);
-            },
-            'plain-text',
-            ''
-          )
-        }}
+        onPress={prompToAddItem}
       />
     )
   }

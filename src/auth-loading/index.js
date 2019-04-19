@@ -16,7 +16,7 @@ const AuthLoading = ({ navigation }) => {
     if (res.status !== 200 || res.ok !== true) {
       navigation.navigate('login');
     } else {
-      navigation.navigate('home');
+      navigation.navigate('setting');
     }
   };
 
