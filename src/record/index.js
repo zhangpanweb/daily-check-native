@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, Button } from 'react-native';
 import fetchRequest from '../../utils/fetch-request';
 import moment from 'moment';
+import { withNavigationFocus } from 'react-navigation';
 
 import Calendar from './calendar';
 import RecordPreview from './record-preview';
 
-const Record = ({ }) => {
+const Record = ({ isFocused }) => {
   const defaultDate = new Date();
 
   const [date, setDate] = useState(moment(defaultDate).format('YYYY-MM-DD')); // 选择的日期，格式为 YYYY-MM-DD
@@ -14,7 +15,7 @@ const Record = ({ }) => {
 
   useEffect(() => {
     _getRecords();
-  }, []);
+  }, [isFocused]);
 
   const handleChangeDate = (date) => {
     setDate(date);
@@ -43,4 +44,4 @@ Record.navigationOptions = ({ navigation }) => ({
   )
 })
 
-export default Record;
+export default withNavigationFocus(Record);

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import fetchRequest from '../../utils/fetch-request';
+import { withNavigationFocus } from 'react-navigation';
 
 import CheckIem from './check-item';
 
-const Home = ({ navigation }) => {
+const Home = ({ isFocused }) => {
   const [todayCheckItems, setTodayCheckItems] = useState([]);
 
   useEffect(() => {
     _getTodayCheckItems();
-  }, []);
+  }, [isFocused]);
 
   const handleClickItem = async (index) => {
     const checkItem = todayCheckItems[index];
@@ -85,4 +86,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Home;
+export default withNavigationFocus(Home);
